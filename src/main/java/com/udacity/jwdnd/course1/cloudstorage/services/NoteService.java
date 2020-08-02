@@ -17,12 +17,13 @@ public class NoteService {
         this.userService = userService;
     }
 
-    public List<Note> getNotes(Integer userId){
+    public List<Note> getNotes(String username){
+        Integer userId = userService.getUser(username).getUserId();
         return noteMapper.getNotes(userId);
     }
 
     public int createNote(Note note, String username){
         Integer userId = userService.getUser(username).getUserId();
-        return noteMapper.insertNote(new Note(null, note.getTitle(), note.getDescription(), userId));
+        return noteMapper.insertNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), userId));
     }
 }

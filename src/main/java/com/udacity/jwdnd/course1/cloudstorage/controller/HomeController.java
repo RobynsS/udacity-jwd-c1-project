@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller()
 @RequestMapping("/home")
 public class HomeController {
@@ -27,7 +29,10 @@ public class HomeController {
     @PostMapping(params={"newNote"})
     public String newNote(@ModelAttribute Note note, Model model, Authentication authentication){
         String username = authentication.getName();
+        String title = note.getNoteTitle();
         noteService.createNote(note, username);
+        List<Note> noteList = noteService.getNotes(username);
+        model.addAttribute("noteList", noteList);
         return "home";
     }
 

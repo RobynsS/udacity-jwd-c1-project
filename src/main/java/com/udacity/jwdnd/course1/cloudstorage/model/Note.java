@@ -6,10 +6,10 @@ public class Note {
     private String noteDescription;
     private Integer userId;
 
-    public Note(Integer noteId, String title, String description, Integer userId) {
+    public Note(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
         this.noteId = noteId;
-        this.noteTitle = title;
-        this.noteDescription = description;
+        this.noteTitle = noteTitle;
+        this.noteDescription = noteDescription;
         this.userId = userId;
     }
 
@@ -21,19 +21,19 @@ public class Note {
         this.noteId = noteId;
     }
 
-    public String getTitle() {
+    public String getNoteTitle() {
         return noteTitle;
     }
 
-    public void setTitle(String title) {
-        this.noteTitle = title;
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
 
-    public String getDescription() {
+    public String getNoteDescription() {
         return noteDescription;
     }
 
-    public void setDescription(String noteDescription) {
+    public void setNoteDescription(String noteDescription) {
         this.noteDescription = noteDescription;
     }
 
