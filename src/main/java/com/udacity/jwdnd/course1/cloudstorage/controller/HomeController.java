@@ -27,10 +27,9 @@ public class HomeController {
     }
 
     @PostMapping(params={"newNote"})
-    public String newNote(@ModelAttribute Note note, Model model, Authentication authentication){
+    public String addNote(@ModelAttribute Note note, Model model, Authentication authentication){
         String username = authentication.getName();
-        String title = note.getNoteTitle();
-        noteService.createNote(note, username);
+        noteService.addNote(note, username);
         List<Note> noteList = noteService.getNotes(username);
         model.addAttribute("noteList", noteList);
         return "home";

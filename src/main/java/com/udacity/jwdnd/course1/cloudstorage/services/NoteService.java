@@ -22,8 +22,14 @@ public class NoteService {
         return noteMapper.getNotes(userId);
     }
 
-    public int createNote(Note note, String username){
+    public int addNote(Note note, String username){
         Integer userId = userService.getUser(username).getUserId();
-        return noteMapper.insertNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), userId));
+
+        if(note.getNoteId() == null) {
+            return noteMapper.insertNote(new Note(null, note.getNoteTitle(), note.getNoteDescription(), userId));
+        }else{
+            return noteMapper.updateNote(new Note(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription(), userId));
+        }
     }
+
 }
