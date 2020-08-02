@@ -5,10 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +27,15 @@ public class HomeController {
     public String addNote(@ModelAttribute Note note, Model model, Authentication authentication){
         String username = authentication.getName();
         noteService.addNote(note, username);
+        List<Note> noteList = noteService.getNotes(username);
+        model.addAttribute("noteList", noteList);
+        return "home";
+    }
+
+    @PostMapping(params={"deleteNote"})
+    public String deleteNote(@ModelAttribute Note note, Model model, Authentication authentication){
+        String username = authentication.getName();
+        noteService.deleteNote(note.getNoteId());
         List<Note> noteList = noteService.getNotes(username);
         model.addAttribute("noteList", noteList);
         return "home";
