@@ -6,7 +6,8 @@ import com.udacity.jwdnd.course1.cloudstorage.page.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -21,14 +22,16 @@ class CloudStorageApplicationTests {
 	private SignupPage signupPage;
 	private HomePage homePage;
 
+	private boolean loggedIn = false;
+
 	@BeforeAll
 	static void beforeAll() {
-		WebDriverManager.chromedriver().setup();
+		WebDriverManager.firefoxdriver().setup();
 	}
 
 	@BeforeEach
 	public void beforeEach() {
-		this.driver = new ChromeDriver();
+		this.driver = new FirefoxDriver();
 	}
 
 	@AfterEach
@@ -50,28 +53,58 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void signUpLoginLogoutTest(){
-		String firstName = "Adam";
-		String lastName = "West";
-		String username = "awest";
-		String password = "password";
-
-		driver.get("http://localhost:" + this.port + "/signup");
-		signupPage = new SignupPage(driver);
-		signupPage.signup(firstName, lastName, username, password);
-
-		driver.get("http://localhost:" + this.port + "/login");
-		loginPage = new LoginPage(driver);
-		loginPage.login(username, password);
-
+		login();
 		driver.get("http://localhost:" + this.port + "/home");
 		Assertions.assertEquals("Home", driver.getTitle());
-		homePage = new HomePage(driver);
-		homePage.logout();
-		Assertions.assertEquals("Login", driver.getTitle());
 
+		logout();
+		Assertions.assertEquals("Login", driver.getTitle());
 		driver.get("http://localhost:" + this.port + "/home");
 		Assertions.assertEquals("Login", driver.getTitle());
+	}
 
+	@Test
+	public void createNoteTest() {
+		String noteTitle = "Title of the note";
+		String noteDescription = "Description of the note";
+
+		login();
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.createNewNote(noteTitle, noteDescription);
+
+		WebElement note = homePage.getLastNoteEntry();
+		Assertions.assertEquals(noteTitle, homePage.getNoteEntryTitle(note));
+		Assertions.assertEquals(noteDescription, homePage.getNoteEntryDescription(note));
+	}
+
+	public void login(){
+		if(!loggedIn) {
+			String firstName = "Adam";
+			String lastName = "West";
+			String username = "awest";
+			String password = "password";
+
+			driver.get("http://localhost:" + this.port + "/signup");
+			signupPage = new SignupPage(driver);
+			signupPage.signup(firstName, lastName, username, password);
+
+			driver.get("http://localhost:" + this.port + "/login");
+			loginPage = new LoginPage(driver);
+			loginPage.login(username, password);
+
+			loggedIn = true;
+		}
+	}
+
+	public void logout(){
+		if(loggedIn) {
+			driver.get("http://localhost:" + this.port + "/home");
+			homePage = new HomePage(driver);
+			homePage.logout();
+			loggedIn = false;
+		}
 	}
 
 }
