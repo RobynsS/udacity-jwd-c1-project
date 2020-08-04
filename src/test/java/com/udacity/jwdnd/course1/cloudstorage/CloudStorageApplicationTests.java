@@ -79,6 +79,28 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals(noteDescription, homePage.getNoteEntryDescription(note));
 	}
 
+	@Test
+	public void editNoteTest(){
+		String noteTitle = "Title of the note";
+		String noteDescription = "Description of the note";
+		String noteTitleNew = "Change in title";
+		String noteDescriptionNew = "Change in description";
+
+		login();
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.createNewNote(noteTitle, noteDescription);
+		int index = homePage.getLastNoteIndex();
+
+		homePage.editNote(noteTitleNew, noteDescriptionNew, index);
+
+		WebElement note = homePage.getLastNoteEntry();
+		Assertions.assertEquals(noteTitleNew, homePage.getNoteEntryTitle(note));
+		Assertions.assertEquals(noteDescriptionNew, homePage.getNoteEntryDescription(note));
+
+	}
+
 	public void login(){
 		if(!loggedIn) {
 			String firstName = "Adam";

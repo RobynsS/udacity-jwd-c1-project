@@ -65,6 +65,10 @@ public class HomePage {
         return getNoteEntry(notesTable.size()-1);
     }
 
+    public int getLastNoteIndex(){
+        return notesTable.size() - 1;
+    }
+
     public WebElement getEditNoteButton(WebElement entry){
         return entry.findElement(By.id("edit-note-button"));
     }
@@ -87,7 +91,9 @@ public class HomePage {
     public void editNote(String title, String description, int index){
         notesTab.click();
         getEditNoteButton(getNoteEntry(index)).click();
+        noteTitleField.clear();
         noteTitleField.sendKeys(title);
+        noteDescriptionField.clear();
         noteDescriptionField.sendKeys(description);
         noteSubmitButton.click();
     }
