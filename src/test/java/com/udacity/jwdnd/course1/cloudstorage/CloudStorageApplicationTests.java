@@ -115,7 +115,6 @@ class CloudStorageApplicationTests {
 		WebElement note = homePage.getLastNoteEntry();
 		Assertions.assertEquals(noteTitleNew, homePage.getNoteEntryTitle(note));
 		Assertions.assertEquals(noteDescriptionNew, homePage.getNoteEntryDescription(note));
-
 	}
 
 	@Test
@@ -140,6 +139,85 @@ class CloudStorageApplicationTests {
 
 		homePage.deleteNote(index);
 		index = homePage.getLastNoteIndex();
+		Assertions.assertEquals(indexStart, index);
+	}
+
+	@Test
+	public void createCredentialTest() {
+		String firstName = "Earl";
+		String lastName = "West";
+		String username = "ewest";
+		String password = "ewestpass";
+
+		String credentialUrl = "Url of the credential";
+		String credentialUsername = "Username for the credential";
+		String credentialPassword = "Decrypted password of for the credential";
+
+		signUp(firstName, lastName, username, password);
+		login(username, password);
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.createNewCredential(credentialUrl, credentialUsername, credentialPassword);
+
+		WebElement credential = homePage.getLastCredentialEntry();
+		Assertions.assertEquals(credentialUrl, homePage.getCredentialEntryUrl(credential));
+		Assertions.assertEquals(credentialUsername, homePage.getCredentialEntryUsername(credential));
+		Assertions.assertNotEquals(credentialPassword, homePage.getCredentialEntryPassword(credential));
+	}
+
+	@Test
+	public void editCredentialTest(){
+		String firstName = "Florance";
+		String lastName = "West";
+		String username = "fwest";
+		String password = "fwestpass";
+
+		String credentialUrl = "Url of the credential";
+		String credentialUsername = "Username for the credential";
+		String credentialPassword = "Decrypted password";
+		String credentialUrlNew = "Change in url";
+		String credentialUsernameNew = "Change in username";
+		String credentialPasswordNew = "Changed password";
+
+		signUp(firstName, lastName, username, password);
+		login(username, password);
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.createNewCredential(credentialUrl, credentialUsername, credentialPassword);
+		int index = homePage.getLastCredentialIndex();
+
+		String oldDecryptedPassword = homePage.editCredential(credentialUrlNew, credentialUsernameNew, credentialPasswordNew, index);
+		WebElement credential = homePage.getLastCredentialEntry();
+		Assertions.assertEquals(credentialPassword, oldDecryptedPassword);
+		Assertions.assertEquals(credentialUrlNew, homePage.getCredentialEntryUrl(credential));
+		Assertions.assertEquals(credentialUsernameNew, homePage.getCredentialEntryUsername(credential));
+	}
+
+	@Test
+	public void deleteCredentialTest(){
+		String firstName = "George";
+		String lastName = "West";
+		String username = "gwest";
+		String password = "gwestpass";
+
+		String credentialUrl = "Url of the credential";
+		String credentialUsername = "Username for the credential";
+		String credentialPassword = "Decrypted password";
+
+		signUp(firstName, lastName, username, password);
+		login(username, password);
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		int indexStart = homePage.getLastCredentialIndex();
+		homePage.createNewCredential(credentialUrl, credentialUsername, credentialPassword);
+		int index = homePage.getLastCredentialIndex();
+		Assertions.assertEquals(indexStart + 1, index);
+
+		homePage.deleteCredential(index);
+		index = homePage.getLastCredentialIndex();
 		Assertions.assertEquals(indexStart, index);
 	}
 

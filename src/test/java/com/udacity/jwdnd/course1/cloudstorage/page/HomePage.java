@@ -58,7 +58,7 @@ public class HomePage {
 
     public HomePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
-        this.wait = new WebDriverWait(driver, 100);
+        this.wait = new WebDriverWait(driver, 20);
     }
 
     public void logout(){
@@ -150,7 +150,7 @@ public class HomePage {
     }
 
     public WebElement getDeleteCredentialButton(WebElement entry){
-        return entry.findElement(By.id("delete-credentials-button"));
+        return entry.findElement(By.id("delete-credential-button"));
     }
 
     public String getCredentialEntryUrl(WebElement entry){
@@ -165,9 +165,11 @@ public class HomePage {
         return entry.findElement(By.id("credential-entry-password")).getText();
     }
 
-    public void editCredential(String url, String username, String password, int index){
+
+    public String editCredential(String url, String username, String password, int index){
         credentialsTab.click();
         getEditCredentialButton(getCredentialEntry(index)).click();
+        String oldDecryptedPassword = credentialPasswordField.getAttribute("value");
         credentialUrlField.clear();
         credentialUrlField.sendKeys(url);
         credentialUsernameField.clear();
@@ -175,6 +177,8 @@ public class HomePage {
         credentialPasswordField.clear();
         credentialPasswordField.sendKeys(password);
         credentialSubmitButton.click();
+
+        return oldDecryptedPassword;
     }
 
     public void deleteCredential(int index){
