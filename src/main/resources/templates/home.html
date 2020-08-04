@@ -130,24 +130,30 @@
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" th:object="${credentials}" id="credentialTable">
+                            <table class="table table-striped" id="credentialTable">
                                 <thead>
                                     <tr>
-                                        <th style="width: 20%" scope="col"></th>
-                                        <th style="width: 35%" scope="col">URL</th>
+                                        <th style="width: 5%" scope="col"></th>
+                                        <th style="width: 5%" scope="col"></th>
+                                        <th style="width: 40%" scope="col">URL</th>
                                         <th style="width: 20%" scope="col">Username</th>
-                                        <th style="width: 25%" scope="col">Password</th>
+                                        <th style="width: 30%" scope="col">Password</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody th:each="credential : ${credentialList}" id="credentials-table">
                                 <tr>
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <button type="button" class="btn btn-success" th:onclick="showCredentialModal([[${credential.credentialId}]],[[${credential.url}]],[[${credential.username}]],[[${credential.password}]])">Edit</button>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <td>
+                                        <form action="#" method="POST" th:action="@{/home}">
+                                            <input type="hidden" name="credentialId" th:value="*{credential.credentialId}">
+                                            <button id="delete-credential-button" type="submit" name="deleteCredential" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                    <th scope="row" th:text="${credential.url}" id="credential-entry-url">Example Credential URL</th>
+                                    <td th:text="${credential.username}" id="credential-entry-username">Example Credential Username</td>
+                                    <td th:text="${credential.password}" id="credential-entry-password">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -163,7 +169,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form action="#" th:action="@{/home}" method="POST">
                                             <input type="hidden" name="credentialId" id="credential-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">URL</label>
@@ -177,7 +183,7 @@
                                                 <label for="note-title" class="col-form-label">Password</label>
                                                 <input type="text" name= "password" class="form-control" id="credential-password" maxlength="30" required>
                                             </div>
-                                            <button id="credentialSubmit" type="submit" class="d-none"></button>
+                                            <button name= "newCredential" id="credentialSubmit" type="submit" class="d-none"></button>
                                         </form>
                                     </div>
                                     <div class="modal-footer">
