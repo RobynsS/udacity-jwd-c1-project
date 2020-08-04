@@ -101,6 +101,24 @@ class CloudStorageApplicationTests {
 
 	}
 
+	@Test
+	public void deleteNoteTest(){
+		String noteTitle = "Title of the note";
+		String noteDescription = "Description of the note";
+
+		login();
+
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.createNewNote(noteTitle, noteDescription);
+		int index = homePage.getLastNoteIndex();
+		Assertions.assertEquals(1, index + 1);
+
+		homePage.deleteNote(index);
+		index = homePage.getLastNoteIndex();
+		Assertions.assertEquals(0, index + 1);
+	}
+
 	public void login(){
 		if(!loggedIn) {
 			String firstName = "Adam";
