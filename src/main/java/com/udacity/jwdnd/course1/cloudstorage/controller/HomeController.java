@@ -65,9 +65,14 @@ public class HomeController {
     }
 
     private void updateData(Model model, String username){
+        model.addAttribute("homeController", this);
         List<Note> noteList = noteService.getNotes(username);
         model.addAttribute("noteList", noteList);
         List<Credential> credentialList = credentialService.getCredentials(username);
         model.addAttribute("credentialList", credentialList);
+    }
+
+    public String getDecryptedPassword(int credentialId){
+        return credentialService.getDecryptedPassword(credentialId);
     }
 }
