@@ -26,7 +26,9 @@ public class HomeController {
     }
 
     @GetMapping()
-    public String homeView() {
+    public String homeView(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        updateData(model, username);
         return "home";
     }
 

@@ -22,8 +22,6 @@ class CloudStorageApplicationTests {
 	private SignupPage signupPage;
 	private HomePage homePage;
 
-	private boolean loggedIn = false;
-
 	@BeforeAll
 	static void beforeAll() {
 		WebDriverManager.firefoxdriver().setup();
@@ -53,7 +51,14 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void signUpLoginLogoutTest(){
-		login();
+		String firstName = "Adam";
+		String lastName = "West";
+		String username = "awest";
+		String password = "awestpass";
+
+		signUp(firstName, lastName, username, password);
+		login(username, password);
+
 		driver.get("http://localhost:" + this.port + "/home");
 		Assertions.assertEquals("Home", driver.getTitle());
 
@@ -65,10 +70,16 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void createNoteTest() {
+		String firstName = "Ben";
+		String lastName = "West";
+		String username = "bwest";
+		String password = "bwestpass";
+
 		String noteTitle = "Title of the note";
 		String noteDescription = "Description of the note";
 
-		login();
+		signUp(firstName, lastName, username, password);
+		login(username, password);
 
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage = new HomePage(driver);
@@ -81,12 +92,18 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void editNoteTest(){
+		String firstName = "Cheryl";
+		String lastName = "West";
+		String username = "cwest";
+		String password = "cwestpass";
+
 		String noteTitle = "Title of the note";
 		String noteDescription = "Description of the note";
 		String noteTitleNew = "Change in title";
 		String noteDescriptionNew = "Change in description";
 
-		login();
+		signUp(firstName, lastName, username, password);
+		login(username, password);
 
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage = new HomePage(driver);
@@ -103,48 +120,44 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void deleteNoteTest(){
+		String firstName = "David";
+		String lastName = "West";
+		String username = "dwest";
+		String password = "dwestpass";
+
 		String noteTitle = "Title of the note";
 		String noteDescription = "Description of the note";
 
-		login();
+		signUp(firstName, lastName, username, password);
+		login(username, password);
 
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage = new HomePage(driver);
+		int indexStart = homePage.getLastNoteIndex();
 		homePage.createNewNote(noteTitle, noteDescription);
 		int index = homePage.getLastNoteIndex();
-		Assertions.assertEquals(1, index + 1);
+		Assertions.assertEquals(indexStart + 1, index);
 
 		homePage.deleteNote(index);
 		index = homePage.getLastNoteIndex();
-		Assertions.assertEquals(0, index + 1);
+		Assertions.assertEquals(indexStart, index);
 	}
 
-	public void login(){
-		if(!loggedIn) {
-			String firstName = "Adam";
-			String lastName = "West";
-			String username = "awest";
-			String password = "password";
+	public void signUp(String firstName, String lastName, String username, String password){
+		driver.get("http://localhost:" + this.port + "/signup");
+		signupPage = new SignupPage(driver);
+		signupPage.signup(firstName, lastName, username, password);
+	}
 
-			driver.get("http://localhost:" + this.port + "/signup");
-			signupPage = new SignupPage(driver);
-			signupPage.signup(firstName, lastName, username, password);
-
-			driver.get("http://localhost:" + this.port + "/login");
-			loginPage = new LoginPage(driver);
-			loginPage.login(username, password);
-
-			loggedIn = true;
-		}
+	public void login(String username, String password){
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
 	}
 
 	public void logout(){
-		if(loggedIn) {
-			driver.get("http://localhost:" + this.port + "/home");
-			homePage = new HomePage(driver);
-			homePage.logout();
-			loggedIn = false;
-		}
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage = new HomePage(driver);
+		homePage.logout();
 	}
-
 }
