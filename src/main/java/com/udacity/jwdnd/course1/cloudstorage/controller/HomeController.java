@@ -70,11 +70,23 @@ public class HomeController {
     @PostMapping(params={"newFile"})
     public String addFile(@RequestParam("fileUpload") MultipartFile multipartFile,
                           Model model, Authentication authentication) throws IOException {
-        if(multipartFile != null){
-            String username = authentication.getName();
-            fileService.addFile(multipartFile, username);
-            updateData(model, username);
+        String username = authentication.getName();
+
+        //Error handling
+        String uploadError = null;
+        if(multipartFile.getOriginalFilename().equals("")){
+            uploadError = "Please select a file before uploading";
         }
+        if(fileService.doesFileExist(multipartFile)){
+            uploadError = "This file already exists, please select a different file for upload";
+        }
+
+        if(uploadError == null){
+            fileService.addFile(multipartFile, username);
+        }
+
+        updateData(model, username);
+        model.addAttribute("uploadError", uploadError);
 
         return "home";
     }
@@ -86,9 +98,6 @@ public class HomeController {
         updateData(model, username);
         return "home";
     }
-
-    //TODO: implement error when no file was selected for upload
-    //TODO: implement error when filename already exists
 
     private void updateData(Model model, String username){
         model.addAttribute("homeController", this);

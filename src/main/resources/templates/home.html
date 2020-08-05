@@ -40,6 +40,9 @@
                                 </div>
                             </div>
                         </form>
+                        <div  th:if="${uploadError}" class="alert alert-danger">
+                            <span th:text="${uploadError}">Example Signup Error Message</span>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-striped" id="fileTable">
                                 <thead>
