@@ -40,8 +40,11 @@
                                 </div>
                             </div>
                         </form>
-                        <div  th:if="${uploadError}" class="alert alert-danger">
-                            <span th:text="${uploadError}">Example Signup Error Message</span>
+                        <div  th:if="${errorMessage}" class="alert alert-danger">
+                            <span th:text="${errorMessage}">Example Error Message</span>
+                        </div>
+                        <div  th:if="${successMessage}" class="alert alert-success">
+                            <span th:text="${successMessage}">Example Success Message</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped" id="fileTable">
@@ -76,7 +79,6 @@
                         <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()" id="new-note-button">
                             + Add a New Note
                         </button>
-
                         <div class="table-responsive">
                             <table class="table table-striped" id="userTable">
                                 <thead>

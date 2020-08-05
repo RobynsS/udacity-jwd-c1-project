@@ -44,6 +44,7 @@ public class HomeController {
         String username = authentication.getName();
         noteService.addNote(note, username);
         updateData(model, username);
+        model.addAttribute("successMessage", "Note successfully created/modified");
         return "home";
     }
 
@@ -52,6 +53,7 @@ public class HomeController {
         String username = authentication.getName();
         noteService.deleteNote(note.getNoteId());
         updateData(model, username);
+        model.addAttribute("successMessage", "Note successfully deleted");
         return "home";
     }
 
@@ -60,6 +62,7 @@ public class HomeController {
         String username = authentication.getName();
         credentialService.addCredential(credential, username);
         updateData(model, username);
+        model.addAttribute("successMessage", "Credential successfully created/modified");
         return "home";
     }
 
@@ -68,6 +71,7 @@ public class HomeController {
         String username = authentication.getName();
         credentialService.deleteCredential(credential.getCredentialId());
         updateData(model, username);
+        model.addAttribute("successMessage", "Note successfully deleted");
         return "home";
     }
 
@@ -81,7 +85,7 @@ public class HomeController {
         if(multipartFile.getOriginalFilename().equals("")){
             uploadError = "Please select a file before uploading";
         }
-        if(fileService.doesFileExist(multipartFile)){
+        if(fileService.doesFileExist(multipartFile, username)){
             uploadError = "This file already exists, please select a different file for upload";
         }
 
@@ -90,8 +94,10 @@ public class HomeController {
         }
 
         updateData(model, username);
-        model.addAttribute("uploadError", uploadError);
-
+        model.addAttribute("errorMessage", uploadError);
+        if(uploadError == null) {
+            model.addAttribute("successMessage", "File successfully uploaded");
+        }
         return "home";
     }
 
@@ -100,13 +106,15 @@ public class HomeController {
         String username = authentication.getName();
         fileService.deleteFile(file.getFileId());
         updateData(model, username);
+        model.addAttribute("successMessage", "File successfully deleted");
         return "home";
     }
 
     @PostMapping(params={"viewFile"})
     public ResponseEntity<Resource> downloadFile(@ModelAttribute File file, Model model, Authentication authentication){
         //Based on filename, get file from database
-        File fileFromDB = fileService.getFile(file.getFilename());
+        String username = authentication.getName();
+        File fileFromDB = fileService.getFile(file.getFilename(), username);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileFromDB.getFilename() + "\"")

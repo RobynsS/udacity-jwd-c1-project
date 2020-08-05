@@ -37,12 +37,14 @@ public class FileService {
         fileMapper.deleteFile(fileId);
     }
 
-    public boolean doesFileExist(MultipartFile file){
+    public boolean doesFileExist(MultipartFile file, String username){
+        Integer userid = userService.getUser(username).getUserId();
         String filename = file.getOriginalFilename();
-        return fileMapper.getFileByFilename(filename) != null;
+        return fileMapper.getFileByFilename(filename, userid) != null;
     }
 
-    public File getFile(String filename){
-        return fileMapper.getFileByFilename(filename);
+    public File getFile(String filename, String username){
+        Integer userid = userService.getUser(username).getUserId();
+        return fileMapper.getFileByFilename(filename, userid);
     }
 }
