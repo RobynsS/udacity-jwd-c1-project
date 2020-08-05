@@ -41,4 +41,8 @@ public class FileService {
         String filename = file.getOriginalFilename();
         return fileMapper.getFileByFilename(filename) != null;
     }
+
+    public File getFile(String filename){
+        return fileMapper.getFileByFilename(filename);
+    }
 }

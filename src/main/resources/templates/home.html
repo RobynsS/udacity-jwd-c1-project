@@ -55,7 +55,10 @@
                                 <tbody th:each="file : ${fileList}" id="files-table">
                                     <tr>
                                         <td>
-                                            <a target="_blank" class="btn btn-success">View</a>
+                                            <form action="#" method="POST" th:action="@{/home}">
+                                                <input type="hidden" name="filename" th:value="*{file.filename}">
+                                                <button id="view-file-button" type="submit" name="viewFile" class="btn btn-success">View</button>
+                                            </form>
                                         </td>
                                         <td>
                                             <form action="#" method="POST" th:action="@{/home}">

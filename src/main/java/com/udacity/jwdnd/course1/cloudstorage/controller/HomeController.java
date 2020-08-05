@@ -6,6 +6,10 @@ import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -97,6 +101,16 @@ public class HomeController {
         fileService.deleteFile(file.getFileId());
         updateData(model, username);
         return "home";
+    }
+
+    @PostMapping(params={"viewFile"})
+    public ResponseEntity<Resource> downloadFile(@ModelAttribute File file, Model model, Authentication authentication){
+        //Based on filename, get file from database
+        File fileFromDB = fileService.getFile(file.getFilename());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileFromDB.getFilename() + "\"")
+                .body(new ByteArrayResource(fileFromDB.getFileData()));
     }
 
     private void updateData(Model model, String username){
